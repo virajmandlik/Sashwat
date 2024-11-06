@@ -10,10 +10,16 @@ require('./db'); // This will connect to MongoDB Atlas
 // Add this line to parse JSON bodies
 app.use(express.json());
 app.use('/api/user',userRuter)
+
+
+
+
+
+
+
 app.get('/', (req, res) => {
     res.send('<h1>Hello</h1>');
 });
-
 
 app.listen(port, () => {
     console.log("Listening on port", port);

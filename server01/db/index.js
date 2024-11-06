@@ -4,10 +4,14 @@ const mongoose = require('mongoose');
 // const uri = "mongodb+srv://virajmandlik:12345@cluster0.jxhwp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/auth-app";
 const uri = "mongodb+srv://virajmandlik:12345@cluster0.jxhwp.mongodb.net/auth-app";
 
-mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+// **********Can work with this 
+// mongoose.connect(uri, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+// })
+
+// *****************or this too..!
+mongoose.connect(uri)
 .then(() => console.log("Database connected successfully"))
 .catch((err) => console.log("Database connection error:", err));
 

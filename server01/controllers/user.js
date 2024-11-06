@@ -1,8 +1,10 @@
 const jwt  = require('jsonwebtoken')
 const User = require('../model/user');
-const {generateOTP, generateEmailTemplate} = require('../utils/mail')
+const {generateOTP, generateEmailTemplate, mailTransport, plainEmailTemplate} = require('../utils/mail')
 const VerificationToken = require('../model/verificationToken')
 const { sendError } = require('../utils/helper');
+const { isValidObjectId } = require('mongoose');
+const verificationToken = require('../model/verificationToken');
 
 // importtan secret 
 const JWT_SECRET = 'qsed4rf567hgv8uo956ftrepplki';
@@ -28,7 +30,7 @@ exports.createUser = async (req,res)=>{
   await newUser.save()
 
   mailTransport().sendMail({
-    from:"viraj.mandlik@mitaoe.ac.in",
+    from:"emailverification@gmail.com",
     to:newUser.email,
     subject:"Verify your email address",
     html: generateEmailTemplate(OTP),
@@ -52,4 +54,46 @@ exports.signin = async (req,res)=>{
         success:true,
         user:{name:user.name,email:user.email,id:user._id,token},
      })   
+}
+
+exports.verifyEmail = async (req,res) =>{
+  const {userId,otp} = req.body
+  if(!userId || !otp.trim()) return sendError(res,'Invalid request..!, missing parameters')
+  
+  if(!isValidObjectId(userId))  return sendError(res,'Invalid userId...!')
+
+    const user = await User.findById(userId)
+    if(!user) return  sendError(res,'Sorry User Not found')
+
+    if(user.verified) return sendError(res,'This user is already verified...!')
+    
+   const token =  await VerificationToken.findOne({owner:user._id}) 
+   if(!token) return sendError(res,'Sorry , your user not found...!')
+   
+  const isMatched = await token.compareToken(otp)
+    if(!isMatched) return sendError(res,'Invalid Token given...!')
+  
+    user.verified = true
+    // deleting the token from the DB 
+    await VerificationToken.findByIdAndDelete(token._id)
+
+    await user.save()
+
+    mailTransport().sendMail({
+      from:"emailverification@gmail.com",
+      to:user.email,
+      subject:"Welcome Mail",
+      html: plainEmailTemplate("Email Verified Succesfully","Thanks for connecting us"),
+    })
+    res.json({
+      success:true,
+      message:"Email verified Succesfully",
+      user:{
+        name:user.name,
+        email:user.email,
+        id:user._id
+      }
+      })
+
+  
 }
