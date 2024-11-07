@@ -13,8 +13,8 @@ exports.mailTransport = ()=> nodemailer.createTransport({
         host: "sandbox.smtp.mailtrap.io",
         port: 2525,
         auth: {
-          user: "f3d76360f51863",
-          pass: "783c06d9a92fcb"
+          user: "96a30354a11b80",
+          pass: "6e661bf97d64b8"
         }
       });
 
@@ -182,6 +182,89 @@ exports.plainEmailTemplate = (heading, message) => {
     </body>
     </html>
   `;
+}
+
+exports.generatePasswordResetTemplate =(url)=>{
+  return `
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Internal CSS styling for better control */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .header {
+      background-color: #4CAF50;
+      padding: 20px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .content {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #333333;
+    }
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      color: #777777;
+      font-size: 12px;
+    }
+    .button {
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Password Reset Request</h1>
+    </div>
+
+    <!-- Email Content -->
+    <div class="content">
+      <p>Dear User,</p>
+      <p>We received a request to reset your password. Please click the link below to reset your password:</p>
+      <p><a href="${url}" class="button">Reset Your Password</a></p>
+
+      <p>If you did not request a password reset, please ignore this email.</p>
+
+      <p>If you have any questions, feel free to contact our support team.</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>&copy; 2024 Your Company. All rights reserved.</p>
+      <p>This email was sent to you as part of our service.</p>
+    </div>
+  </div>
+</body>
+</html>
+
+  `
 }
 
 
